@@ -1,2 +1,6 @@
 exp
 .env
+data/*/*.csv
+.config/*
+dashboards/*
+
