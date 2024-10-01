@@ -16,10 +16,12 @@ SAMPLE_SPREADSHEET_ID = os.getenv("SHEET_ID")
 Month = dt.datetime.now().strftime("%B")
 SAMPLE_RANGE_NAME = "Transactions|" + Month
 
+def checkSameDf(filepath, df):
+    old_df = pd.read_csv(filepath)
+    return old_df.equals(df)
 
 def getSheet():
-  """Shows basic usage of the Sheets API.
-  Prints values from a sample spreadsheet.
+  """Reads in the data from the Google Sheet and saves it as a CSV file.
   """
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
@@ -37,7 +39,7 @@ def getSheet():
       )
       creds = flow.run_local_server(port=0)
     # Save the credentials for the next run
-    with open("token.json", "w") as token:
+    with open(".config/gspread/token.json", "w") as token:
       token.write(creds.to_json())
 
   try:
@@ -56,14 +58,16 @@ def getSheet():
       print("No data found.")
       return
 
-    df = pd.DataFrame(values)
+    df = pd.DataFrame(values[1:], columns=values[0])
     filepaths = glob.glob("data/current/*.csv")
-    print(filepaths)
     if filepaths != []:
-        filename = filepaths[0].split("/")[-1]
-        if filename == dt.datetime.now().strftime("%Y-%m-%d") + ".csv":
-            filename = filename.replace(".csv", "_" + str(dt.datetime.now().time()) +".csv")
-        os.replace(filepaths[0], "data/archive/" + filename)
+        if checkSameDf(filepaths[0], df):
+          return df #df is the same as the previous day
+        else:
+          filename = filepaths[0].split("/")[-1]
+          if filename == dt.datetime.now().strftime("%Y-%m-%d") + ".csv":
+              filename = filename.replace(".csv", "_" + str(dt.datetime.now().time()) +".csv")
+          os.replace(filepaths[0], "data/archive/" + filename)
     df.to_csv("data/current/" + dt.datetime.now().strftime("%Y-%m-%d") + ".csv", index=False)
     return df
   except HttpError as err:
