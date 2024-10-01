@@ -1,3 +1,0 @@
-2024-09-30 18:44:39,485:INFO:file_cache is only supported with oauth2client<4.0.0
-2024-09-30 18:44:39,776:INFO:Cleaning data...
-2024-09-30 18:44:39,779:INFO:Data cleaning complete. 72 rows processed.

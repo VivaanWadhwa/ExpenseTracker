@@ -3,4 +3,4 @@ exp
 data/*/*.csv
 .config/*
 dashboards/*
-
+logs/*
