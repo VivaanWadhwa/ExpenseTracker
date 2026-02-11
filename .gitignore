@@ -1,6 +1,1 @@
-exp
-.env
-data/*/*.csv
-.config/*
-dashboards/*
-logs/*
+setup.sh
